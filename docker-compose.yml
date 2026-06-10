@@ -1,0 +1,17 @@
+services:
+  backend:
+    build:
+      context: ./apps/backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATAFAIR_BASE_URL: https://data.gouv.ci/data-fair/api/v1
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173,http://localhost:8080
+
+  frontend:
+    build:
+      context: ./apps/frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend

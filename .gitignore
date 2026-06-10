@@ -1,0 +1,24 @@
+.DS_Store
+.env
+.env.local
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.venv*/
+
+node_modules/
+dist/
+*.tsbuildinfo
+
+.coverage
+coverage/
+
+Junior Full stack Engineer Test.pdf
+
+apps/frontend/dist/
+apps/frontend/node_modules/
+apps/backend/.venv/
+apps/backend/.venv*/
