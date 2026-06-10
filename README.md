@@ -161,7 +161,70 @@ Docker URLs:
 - MCP tools endpoint: `https://liwaza-govdata-backend-production.up.railway.app/mcp/tools`
 - API docs: `https://liwaza-govdata-backend-production.up.railway.app/docs`
 
-## 10. Environment Variables
+## 10. Screenshots
+
+Add production screenshots here before final submission. Save the images in `docs/screenshots/` using the filenames below.
+
+### 10.1 Main Chat Interface
+
+Capture the deployed frontend before sending a message.
+
+![Main chat interface](docs/screenshots/01-main-chat.png)
+
+### 10.2 Dataset Search Result
+
+Capture the result after asking:
+
+```text
+Trouve les datasets liés à l'éducation
+```
+
+![Dataset search result](docs/screenshots/02-dataset-search.png)
+
+### 10.3 MCP Tool Execution Trace
+
+Capture the visible tool execution panel showing `search_public_datasets` and `recommend_followup_questions`.
+
+![MCP tool execution trace](docs/screenshots/03-tool-trace.png)
+
+### 10.4 Backend API Documentation
+
+Capture the FastAPI documentation page.
+
+URL:
+
+```text
+https://liwaza-govdata-backend-production.up.railway.app/docs
+```
+
+![Backend API documentation](docs/screenshots/04-api-docs.png)
+
+### 10.5 MCP Tools Endpoint
+
+Capture the MCP tools endpoint response.
+
+URL:
+
+```text
+https://liwaza-govdata-backend-production.up.railway.app/mcp/tools
+```
+
+![MCP tools endpoint](docs/screenshots/05-mcp-tools.png)
+![MCP tools endpoint](docs/screenshots/05-mcp-tools.png)
+
+### 10.6 Selected Dataset Context
+
+Optional capture showing the selected dataset in the sidebar after a search.
+
+![Selected dataset context](docs/screenshots/06-selected-dataset-context.png)
+
+### 10.7 Inspector Trace Detail
+
+Optional capture showing the latest execution inspector on the right side of the interface.
+
+![Inspector trace detail](docs/screenshots/07-inspector-trace.png)
+
+## 11. Environment Variables
 
 Root `.env.example`:
 
@@ -175,7 +238,7 @@ VITE_API_KEY=
 
 For the MVP, `API_KEY` is optional. If set, frontend requests must include `VITE_API_KEY`.
 
-## 11. MCP Tools
+## 12. MCP Tools
 
 Current tools:
 
@@ -197,7 +260,7 @@ Tool discovery endpoint:
 GET /mcp/tools
 ```
 
-## 12. Main API Endpoints
+## 13. Main API Endpoints
 
 Health and metadata:
 
@@ -233,7 +296,7 @@ Conversation:
 
 - `POST /api/chat`
 
-## 13. Example API Test
+## 14. Example API Test
 
 ```bash
 curl -s -X POST http://localhost:8000/api/chat \
@@ -248,7 +311,7 @@ Expected:
 - tool trace includes `search_public_datasets`
 - result comes from data.gouv.ci
 
-## 14. Tests
+## 15. Tests
 
 Backend:
 
@@ -274,7 +337,7 @@ Verified locally:
 - npm audit: 0 vulnerabilities after Vite update;
 - real data.gouv.ci calls: verified.
 
-## 15. Deployment Plan
+## 16. Deployment Plan
 
 Recommended:
 
@@ -290,7 +353,7 @@ Required public submission URLs:
 - MCP endpoint URL;
 - GitHub repository URL.
 
-## 16. Documentation
+## 17. Documentation
 
 Project documents:
 
@@ -302,7 +365,7 @@ Project documents:
 - [TEST_PLAN.md](TEST_PLAN.md)
 - [docs/CLEAN_CODE_REVIEW.md](docs/CLEAN_CODE_REVIEW.md)
 
-## 17. Assumptions
+## 18. Assumptions
 
 - data.gouv.ci is publicly accessible.
 - Data Fair API remains available.
@@ -310,7 +373,7 @@ Project documents:
 - Not every dataset is equally useful for comparison or charts.
 - The reviewer will inspect traffic and tool execution.
 
-## 18. Tradeoffs
+## 19. Tradeoffs
 
 | Decision | Reason | Tradeoff |
 |---|---|---|
@@ -320,7 +383,7 @@ Project documents:
 | local language detection | private and fast | larger Python dependency |
 | monorepo | easier review | less separation at large scale |
 
-## 19. Future Improvements
+## 20. Future Improvements
 
 - persistent conversation history;
 - dataset selection UI;
@@ -332,7 +395,7 @@ Project documents:
 - optional LLM-powered summarization;
 - FNE/DGI integration when credentials are available.
 
-## 20. Walkthrough Video Checklist
+## 21. Walkthrough Video Checklist
 
 The video should cover:
 
@@ -348,7 +411,7 @@ The video should cover:
 10. AI/LLM strategy.
 11. Future improvements.
 
-## 21. Submission Checklist
+## 22. Submission Checklist
 
 Before final submission:
 
@@ -359,6 +422,13 @@ Before final submission:
 - [x] Verify `/mcp/tools`.
 - [x] Verify frontend can call deployed backend.
 - [ ] Add screenshots to README.
+- [ ] Add `docs/screenshots/01-main-chat.png`.
+- [ ] Add `docs/screenshots/02-dataset-search.png`.
+- [ ] Add `docs/screenshots/03-tool-trace.png`.
+- [ ] Add `docs/screenshots/04-api-docs.png`.
+- [ ] Add `docs/screenshots/05-mcp-tools.png`.
+- [ ] Optional: add `docs/screenshots/06-selected-dataset-context.png`.
+- [ ] Optional: add `docs/screenshots/07-inspector-trace.png`.
 - [ ] Record 10-15 minute English walkthrough video.
 - [x] Submit GitHub repository URL.
 - [x] Submit frontend URL.
