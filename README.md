@@ -358,12 +358,9 @@ Required public submission URLs:
 Project documents:
 
 - [BENCHMARK.md](BENCHMARK.md)
-- [CAHIER_DES_CHARGES.md](CAHIER_DES_CHARGES.md)
 - [ARCHITECTURE.md](ARCHITECTURE.md)
 - [AI_STRATEGY.md](AI_STRATEGY.md)
 - [AI_USAGE.md](AI_USAGE.md)
-- [TEST_PLAN.md](TEST_PLAN.md)
-- [docs/CLEAN_CODE_REVIEW.md](docs/CLEAN_CODE_REVIEW.md)
 
 ## 18. Assumptions
 
@@ -394,46 +391,3 @@ Project documents:
 - stronger integration tests;
 - optional LLM-powered summarization;
 - FNE/DGI integration when credentials are available.
-
-## 21. Walkthrough Video Checklist
-
-The video should cover:
-
-1. Product overview.
-2. Why data.gouv.ci.
-3. Architecture.
-4. MCP tool design.
-5. Backend design.
-6. Frontend design.
-7. DevOps decisions.
-8. Testing strategy.
-9. Security considerations.
-10. AI/LLM strategy.
-11. Future improvements.
-
-## 22. Submission Checklist
-
-Before final submission:
-
-- [x] Push repository to GitHub public.
-- [x] Deploy frontend.
-- [x] Deploy backend.
-- [x] Verify backend `/docs`.
-- [x] Verify `/mcp/tools`.
-- [x] Verify frontend can call deployed backend.
-- [x] Add screenshots to README.
-- [x] Add `docs/screenshots/01-main-chat.png`.
-- [x] Add `docs/screenshots/02-dataset-search.png`.
-- [x] Add `docs/screenshots/03-tool-trace.png`.
-- [x] Add `docs/screenshots/04-api-docs.png`.
-- [x] Add `docs/screenshots/05-mcp-tools.png`.
-- [x] Optional: add `docs/screenshots/06-selected-dataset-context.png`.
-- [x] Optional: add `docs/screenshots/07-inspector-trace.png`.
-- [ ] Record 10-15 minute English walkthrough video.
-- [x] Submit GitHub repository URL.
-- [x] Submit frontend URL.
-- [x] Submit backend API URL.
-- [x] Submit MCP endpoint URL.
-- [ ] Submit architecture document.
-- [ ] Submit AI strategy document.
-- [ ] Submit walkthrough video.
