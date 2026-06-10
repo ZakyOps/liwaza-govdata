@@ -421,14 +421,14 @@ Before final submission:
 - [x] Verify backend `/docs`.
 - [x] Verify `/mcp/tools`.
 - [x] Verify frontend can call deployed backend.
-- [ ] Add screenshots to README.
-- [ ] Add `docs/screenshots/01-main-chat.png`.
-- [ ] Add `docs/screenshots/02-dataset-search.png`.
-- [ ] Add `docs/screenshots/03-tool-trace.png`.
-- [ ] Add `docs/screenshots/04-api-docs.png`.
-- [ ] Add `docs/screenshots/05-mcp-tools.png`.
-- [ ] Optional: add `docs/screenshots/06-selected-dataset-context.png`.
-- [ ] Optional: add `docs/screenshots/07-inspector-trace.png`.
+- [x] Add screenshots to README.
+- [x] Add `docs/screenshots/01-main-chat.png`.
+- [x] Add `docs/screenshots/02-dataset-search.png`.
+- [x] Add `docs/screenshots/03-tool-trace.png`.
+- [x] Add `docs/screenshots/04-api-docs.png`.
+- [x] Add `docs/screenshots/05-mcp-tools.png`.
+- [x] Optional: add `docs/screenshots/06-selected-dataset-context.png`.
+- [x] Optional: add `docs/screenshots/07-inspector-trace.png`.
 - [ ] Record 10-15 minute English walkthrough video.
 - [x] Submit GitHub repository URL.
 - [x] Submit frontend URL.
