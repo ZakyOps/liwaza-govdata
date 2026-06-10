@@ -50,3 +50,21 @@ def test_keeps_ivoirian_dataset():
     }
 
     assert ToolService._is_cote_divoire_dataset(dataset) is True
+
+
+def test_infers_year_and_numeric_fields_for_generic_comparison():
+    rows = [
+        {"annee_scolaire": 2020, "ecoles": 10, "_rand": 4},
+        {"annee_scolaire": 2021, "ecoles": 12, "_rand": 5},
+    ]
+
+    assert ToolService._infer_comparison_fields(rows, "__auto__", "__auto__") == (
+        "annee_scolaire",
+        "ecoles",
+    )
+
+
+def test_compare_answer_handles_empty_values():
+    answer = ChatService._compare_answer({"values": [], "absolute_change": None}, "fr")
+
+    assert "Je n'ai pas trouvé" in answer

@@ -1,6 +1,8 @@
 type Props = {
   data: Record<string, unknown>;
   language: "fr" | "en";
+  selectedDatasetId?: string | null;
+  onSelectDataset?: (dataset: { id: string; title: string }) => void;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -25,7 +27,12 @@ function formatDate(value: unknown): string {
   return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
 }
 
-export function ResultsView({ data, language }: Props) {
+function datasetIdentifier(row: Record<string, unknown>): string | null {
+  const id = row.id ?? row.slug;
+  return typeof id === "string" && id.length > 0 ? id : null;
+}
+
+export function ResultsView({ data, language, selectedDatasetId, onSelectDataset }: Props) {
   const results = Array.isArray(data.results) ? data.results : [];
   const schema = Array.isArray(data.schema) ? data.schema : [];
   const points = Array.isArray(data.points) ? data.points : [];
@@ -46,6 +53,8 @@ export function ResultsView({ data, language }: Props) {
         ? "lignes d'exemple réelles récupérées depuis data.gouv.ci."
         : "real sample rows fetched from data.gouv.ci.",
     publicDatasets: language === "fr" ? "Datasets publics" : "Public datasets",
+    select: language === "fr" ? "Sélectionner" : "Select",
+    selected: language === "fr" ? "Sélectionné" : "Selected",
     schema: language === "fr" ? "Schéma du dataset" : "Dataset schema",
     chartData: language === "fr" ? "Données pour graphique" : "Chart data",
     rawPayload: language === "fr" ? "Données structurées" : "Raw structured payload",
@@ -135,20 +144,37 @@ export function ResultsView({ data, language }: Props) {
       <div className="result-panel">
         <div className="panel-title">{labels.publicDatasets}</div>
         <div className="dataset-list">
-          {rows.map((row, index) => (
-            <article className="dataset-item" key={`${renderValue(row.slug)}-${index}`}>
-              <div className="dataset-rank">{index + 1}</div>
-              <div>
-                <h3>{renderValue(row.title)}</h3>
-                <p>{truncate(row.description, 230)}</p>
-                <div className="dataset-meta">
-                  <span>{truncate(row.origin, 70)}</span>
-                  <span>{formatDate(row.updatedAt)}</span>
-                  <span>{renderValue(row.count)} {language === "fr" ? "lignes" : "rows"}</span>
+          {rows.map((row, index) => {
+            const id = datasetIdentifier(row);
+            const title = renderValue(row.title);
+            const isSelected = Boolean(id && id === selectedDatasetId);
+            return (
+              <article className={`dataset-item ${isSelected ? "selected" : ""}`} key={`${renderValue(row.slug)}-${index}`}>
+                <div className="dataset-rank">{index + 1}</div>
+                <div>
+                  <div className="dataset-heading">
+                    <h3>{title}</h3>
+                    {id && onSelectDataset ? (
+                      <button
+                        className="dataset-select"
+                        type="button"
+                        onClick={() => onSelectDataset({ id, title })}
+                        aria-pressed={isSelected}
+                      >
+                        {isSelected ? labels.selected : labels.select}
+                      </button>
+                    ) : null}
+                  </div>
+                  <p>{truncate(row.description, 230)}</p>
+                  <div className="dataset-meta">
+                    <span>{truncate(row.origin, 70)}</span>
+                    <span>{formatDate(row.updatedAt)}</span>
+                    <span>{renderValue(row.count)} {language === "fr" ? "lignes" : "rows"}</span>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </div>
     );

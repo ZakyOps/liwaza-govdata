@@ -32,7 +32,7 @@ const copy = {
     loading: "Exécution des outils...",
     error: "Je n'ai pas pu exécuter la requête. Vérifie que le backend est lancé.",
     backendUnreachable:
-      "Impossible de joindre l'API backend. Lance le serveur FastAPI puis réessaie.",
+      "Impossible de joindre l'API backend. Si tu testes en ligne, recharge la page puis réessaie. En local, lance le serveur FastAPI.",
     placeholder: "Pose une question sur les données publiques...",
     latestExecution: "Dernière exécution",
     intent: "Intention",
@@ -64,7 +64,8 @@ const copy = {
     userLabel: "You",
     loading: "Executing tools...",
     error: "I could not execute the request. Check that the backend is running.",
-    backendUnreachable: "The backend API is unreachable. Start the FastAPI server and try again.",
+    backendUnreachable:
+      "The backend API is unreachable. If you are online, refresh the page and try again. Locally, start the FastAPI server.",
     placeholder: "Ask a question about public data...",
     latestExecution: "Latest execution",
     intent: "Intent",
@@ -171,6 +172,12 @@ export default function App() {
     setMessages([{ role: "assistant", content: t.welcome }]);
   }
 
+  function selectDataset(dataset: { id: string; title: string }) {
+    setSelectedDataset(dataset.id);
+    setSelectedDatasetTitle(dataset.title);
+    setError(null);
+  }
+
   function changeLanguageMode(nextLanguageMode: LanguageMode) {
     setLanguageMode(nextLanguageMode);
     const nextUiLanguage = nextLanguageMode === "auto" ? uiLanguage : nextLanguageMode;
@@ -252,7 +259,12 @@ export default function App() {
               {message.response ? (
                 <div className="message-details">
                   <ToolTimeline traces={message.response.traces} language={language} />
-                  <ResultsView data={message.response.data} language={language} />
+                  <ResultsView
+                    data={message.response.data}
+                    language={language}
+                    selectedDatasetId={selectedDataset}
+                    onSelectDataset={selectDataset}
+                  />
                   <div className="followups">
                     {message.response.followups.map((followup) => (
                       <button

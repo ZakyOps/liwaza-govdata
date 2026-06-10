@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import unicodedata
 from typing import Any
 
 from app.core.config import get_settings
@@ -277,12 +278,23 @@ class ToolService:
 
     async def compare_indicator_by_year(self, payload: CompareByYearRequest) -> ToolEnvelope:
         start = time.perf_counter()
-        raw = await self.client.get_lines(payload.dataset_id_or_slug, 100, f"-{payload.year_field}", None)
+        auto_fields = payload.year_field == "__auto__" or payload.value_field == "__auto__"
+        raw = await self.client.get_lines(
+            payload.dataset_id_or_slug,
+            100,
+            None if auto_fields else f"-{payload.year_field}",
+            None,
+        )
         rows = raw.get("results", [])
+        year_field = payload.year_field
+        value_field = payload.value_field
+        if auto_fields:
+            year_field, value_field = self._infer_comparison_fields(rows, year_field, value_field)
+
         values = []
         for row in rows:
-            year = row.get(payload.year_field)
-            value = row.get(payload.value_field)
+            year = row.get(year_field)
+            value = row.get(value_field)
             if isinstance(year, int) and payload.start_year <= year <= payload.end_year and isinstance(value, int | float):
                 values.append({"year": year, "value": value})
         values = sorted(values, key=lambda item: item["year"])
@@ -302,9 +314,11 @@ class ToolService:
                 "absolute_change": absolute_change,
                 "percent_change": percent_change,
                 "interpretation": self._comparison_text(values, absolute_change, percent_change),
+                "year_field": year_field,
+                "value_field": value_field,
             },
             "GET /datasets/{dataset}/lines",
-            payload.model_dump(),
+            {**payload.model_dump(), "resolved_year_field": year_field, "resolved_value_field": value_field},
         )
 
     async def summarize_public_dataset(self, payload: SummarizeDatasetRequest) -> ToolEnvelope:
@@ -433,6 +447,72 @@ class ToolService:
         direction = "augmente" if absolute_change and absolute_change > 0 else "diminue"
         pct = f" ({percent_change:.2f}%)" if isinstance(percent_change, int | float) else ""
         return f"L'indicateur {direction} de {absolute_change}{pct} sur la periode."
+
+    @classmethod
+    def _infer_comparison_fields(
+        cls,
+        rows: list[dict[str, Any]],
+        requested_year_field: str,
+        requested_value_field: str,
+    ) -> tuple[str, str]:
+        if not rows:
+            return requested_year_field, requested_value_field
+
+        keys = [key for row in rows for key in row.keys()]
+        unique_keys = list(dict.fromkeys(keys))
+        year_field = (
+            requested_year_field
+            if requested_year_field != "__auto__"
+            else cls._infer_year_field(rows, unique_keys)
+        )
+        value_field = (
+            requested_value_field
+            if requested_value_field != "__auto__"
+            else cls._infer_value_field(rows, unique_keys, year_field)
+        )
+        return year_field, value_field
+
+    @classmethod
+    def _infer_year_field(cls, rows: list[dict[str, Any]], keys: list[str]) -> str:
+        preferred = ["annee", "année", "year", "annees", "années"]
+        for key in keys:
+            if cls._normalize_key(key) in preferred and cls._has_year_values(rows, key):
+                return key
+        for key in keys:
+            normalized = cls._normalize_key(key)
+            if ("annee" in normalized or "year" in normalized) and cls._has_year_values(rows, key):
+                return key
+        for key in keys:
+            if cls._has_year_values(rows, key):
+                return key
+        return "annee"
+
+    @classmethod
+    def _infer_value_field(cls, rows: list[dict[str, Any]], keys: list[str], year_field: str) -> str:
+        ignored = {"_id", "_i", "_rand", "_score", year_field}
+        candidates = []
+        for key in keys:
+            if key in ignored:
+                continue
+            values = [row.get(key) for row in rows]
+            numeric_values = [value for value in values if isinstance(value, int | float)]
+            if not numeric_values:
+                continue
+            non_zero_count = sum(1 for value in numeric_values if value != 0)
+            candidates.append((len(numeric_values), non_zero_count, key))
+        if not candidates:
+            return "taux_dinvestissements_percent_du_pib"
+        candidates.sort(key=lambda item: (item[1], item[0]), reverse=True)
+        return candidates[0][2]
+
+    @staticmethod
+    def _has_year_values(rows: list[dict[str, Any]], key: str) -> bool:
+        return any(isinstance(row.get(key), int) and 1900 <= row[key] <= 2100 for row in rows)
+
+    @staticmethod
+    def _normalize_key(key: str) -> str:
+        normalized = unicodedata.normalize("NFKD", key.lower()).encode("ascii", "ignore").decode("ascii")
+        return normalized.replace(" ", "_").replace("-", "_")
 
 
 def get_tool_service() -> ToolService:

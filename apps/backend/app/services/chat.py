@@ -23,20 +23,25 @@ class ChatService:
 
     async def handle(self, payload: ChatRequest) -> ChatResponse:
         message = payload.message.strip()
+        lowered_message = message.lower()
         language = payload.language or detect_language(message)
         intent = detect_intent(message)
         traces = []
         data: dict[str, Any] = {}
-        selected_dataset = payload.context.get("dataset")
+        context_dataset = payload.context.get("dataset")
+        selected_dataset = context_dataset if isinstance(context_dataset, str) else None
 
         if intent == "compare":
             years = extract_years(message)
+            use_investment_dataset = "investissement" in lowered_message or "investment" in lowered_message
+            dataset = DATASET_INVESTMENT_SLUG if use_investment_dataset or not selected_dataset else selected_dataset
+            auto_fields = bool(selected_dataset and not use_investment_dataset)
             request = CompareByYearRequest(
-                dataset_id_or_slug=selected_dataset or DATASET_INVESTMENT_SLUG,
-                year_field=payload.context.get("year_field", "annee"),
+                dataset_id_or_slug=dataset,
+                year_field=payload.context.get("year_field", "__auto__" if auto_fields else "annee"),
                 value_field=payload.context.get(
                     "value_field",
-                    "taux_dinvestissements_percent_du_pib",
+                    "__auto__" if auto_fields else "taux_dinvestissements_percent_du_pib",
                 ),
                 start_year=years[0],
                 end_year=years[1],
@@ -149,6 +154,10 @@ class ChatService:
         values = data.get("values", [])
         absolute_change = data.get("absolute_change")
         percent_change = data.get("percent_change")
+        if not values:
+            if language == "en":
+                return "I could not find comparable yearly numeric values in the selected dataset for that period."
+            return "Je n'ai pas trouvé de valeurs numériques annuelles comparables dans le dataset sélectionné pour cette période."
         if language == "en":
             direction = (
                 "increased"
