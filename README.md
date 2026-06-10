@@ -50,10 +50,8 @@ Implemented:
 
 Still required before final submission:
 
-- public deployment URLs;
 - production screenshots;
 - final walkthrough video;
-- final GitHub push;
 - optional extra integration tests.
 
 ## 3. Product Overview
@@ -155,7 +153,15 @@ Docker URLs:
 - frontend: `http://localhost:8080`
 - backend: `http://localhost:8000`
 
-## 9. Environment Variables
+## 9. Public Deployment URLs
+
+- GitHub repository: `https://github.com/ZakyOps/liwaza-govdata`
+- Frontend: `https://frontend-two-lemon-48.vercel.app`
+- Backend API: `https://liwaza-govdata-backend-production.up.railway.app`
+- MCP tools endpoint: `https://liwaza-govdata-backend-production.up.railway.app/mcp/tools`
+- API docs: `https://liwaza-govdata-backend-production.up.railway.app/docs`
+
+## 10. Environment Variables
 
 Root `.env.example`:
 
@@ -169,7 +175,7 @@ VITE_API_KEY=
 
 For the MVP, `API_KEY` is optional. If set, frontend requests must include `VITE_API_KEY`.
 
-## 10. MCP Tools
+## 11. MCP Tools
 
 Current tools:
 
@@ -191,7 +197,7 @@ Tool discovery endpoint:
 GET /mcp/tools
 ```
 
-## 11. Main API Endpoints
+## 12. Main API Endpoints
 
 Health and metadata:
 
@@ -227,7 +233,7 @@ Conversation:
 
 - `POST /api/chat`
 
-## 12. Example API Test
+## 13. Example API Test
 
 ```bash
 curl -s -X POST http://localhost:8000/api/chat \
@@ -242,7 +248,7 @@ Expected:
 - tool trace includes `search_public_datasets`
 - result comes from data.gouv.ci
 
-## 13. Tests
+## 14. Tests
 
 Backend:
 
@@ -262,13 +268,13 @@ npm audit --audit-level=moderate
 
 Verified locally:
 
-- backend tests: 7 passing;
+- backend tests: 9 passing;
 - backend lint: passing;
 - frontend build: passing;
 - npm audit: 0 vulnerabilities after Vite update;
 - real data.gouv.ci calls: verified.
 
-## 14. Deployment Plan
+## 15. Deployment Plan
 
 Recommended:
 
@@ -284,7 +290,7 @@ Required public submission URLs:
 - MCP endpoint URL;
 - GitHub repository URL.
 
-## 15. Documentation
+## 16. Documentation
 
 Project documents:
 
@@ -296,7 +302,7 @@ Project documents:
 - [TEST_PLAN.md](TEST_PLAN.md)
 - [docs/CLEAN_CODE_REVIEW.md](docs/CLEAN_CODE_REVIEW.md)
 
-## 16. Assumptions
+## 17. Assumptions
 
 - data.gouv.ci is publicly accessible.
 - Data Fair API remains available.
@@ -304,7 +310,7 @@ Project documents:
 - Not every dataset is equally useful for comparison or charts.
 - The reviewer will inspect traffic and tool execution.
 
-## 17. Tradeoffs
+## 18. Tradeoffs
 
 | Decision | Reason | Tradeoff |
 |---|---|---|
@@ -314,9 +320,8 @@ Project documents:
 | local language detection | private and fast | larger Python dependency |
 | monorepo | easier review | less separation at large scale |
 
-## 18. Future Improvements
+## 19. Future Improvements
 
-- public deployment;
 - persistent conversation history;
 - dataset selection UI;
 - charts with a charting library;
@@ -327,7 +332,7 @@ Project documents:
 - optional LLM-powered summarization;
 - FNE/DGI integration when credentials are available.
 
-## 19. Walkthrough Video Checklist
+## 20. Walkthrough Video Checklist
 
 The video should cover:
 
@@ -343,22 +348,22 @@ The video should cover:
 10. AI/LLM strategy.
 11. Future improvements.
 
-## 20. Submission Checklist
+## 21. Submission Checklist
 
 Before final submission:
 
-- [ ] Push repository to GitHub public.
-- [ ] Deploy frontend.
-- [ ] Deploy backend.
-- [ ] Verify backend `/docs`.
-- [ ] Verify `/mcp/tools`.
-- [ ] Verify frontend can call deployed backend.
+- [x] Push repository to GitHub public.
+- [x] Deploy frontend.
+- [x] Deploy backend.
+- [x] Verify backend `/docs`.
+- [x] Verify `/mcp/tools`.
+- [x] Verify frontend can call deployed backend.
 - [ ] Add screenshots to README.
 - [ ] Record 10-15 minute English walkthrough video.
-- [ ] Submit GitHub repository URL.
-- [ ] Submit frontend URL.
-- [ ] Submit backend API URL.
-- [ ] Submit MCP endpoint URL.
+- [x] Submit GitHub repository URL.
+- [x] Submit frontend URL.
+- [x] Submit backend API URL.
+- [x] Submit MCP endpoint URL.
 - [ ] Submit architecture document.
 - [ ] Submit AI strategy document.
 - [ ] Submit walkthrough video.
