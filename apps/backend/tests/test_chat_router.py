@@ -82,3 +82,12 @@ def test_compare_answer_handles_empty_values():
     answer = ChatService._compare_answer({"values": [], "absolute_change": None}, "fr")
 
     assert "Je n'ai pas trouvé" in answer
+
+
+def test_compare_answer_reports_aggregated_year_count():
+    answer = ChatService._compare_answer(
+        {"values": [{"year": 2020, "value": 10}, {"year": 2021, "value": 15}], "absolute_change": 5},
+        "fr",
+    )
+
+    assert "2 valeurs annuelles" in answer

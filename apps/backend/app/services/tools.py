@@ -292,13 +292,13 @@ class ToolService:
         if auto_fields:
             year_field, value_field = self._infer_comparison_fields(rows, year_field, value_field)
 
-        values = []
+        yearly_totals: dict[int, float | int] = {}
         for row in rows:
             year = self._coerce_year(row.get(year_field))
             value = self._coerce_number(row.get(value_field))
             if year is not None and payload.start_year <= year <= payload.end_year and value is not None:
-                values.append({"year": year, "value": value})
-        values = sorted(values, key=lambda item: item["year"])
+                yearly_totals[year] = yearly_totals.get(year, 0) + value
+        values = [{"year": year, "value": value} for year, value in sorted(yearly_totals.items())]
         first = values[0]["value"] if values else None
         last = values[-1]["value"] if values else None
         absolute_change = last - first if isinstance(first, int | float) and isinstance(last, int | float) else None
