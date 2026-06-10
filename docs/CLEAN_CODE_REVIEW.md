@@ -4,10 +4,6 @@
 
 Cette note documente les principes de Clean Code appliques au projet Liwaza GovData apres audit du code existant.
 
-Document de reference lu:
-
-- `/Users/zakaria/Documents/Odoo/19.0/docs/clean_code.pdf`
-- `/Users/zakaria/Documents/Odoo/19.0/docs/clean.pdf`
 
 ## Principes appliques
 
