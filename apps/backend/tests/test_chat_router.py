@@ -64,6 +64,20 @@ def test_infers_year_and_numeric_fields_for_generic_comparison():
     )
 
 
+def test_infers_year_from_school_year_text():
+    rows = [
+        {"annee_scolaire": "2020-2021", "effectif_total": "1200", "enseignants_femmes": 2050},
+        {"annee_scolaire": "2021-2022", "effectif_total": "1300", "enseignants_femmes": 2060},
+    ]
+
+    assert ToolService._infer_comparison_fields(rows, "__auto__", "__auto__") == (
+        "annee_scolaire",
+        "effectif_total",
+    )
+    assert ToolService._coerce_year("2020-2021") == 2020
+    assert ToolService._coerce_number("1 300,5") == 1300.5
+
+
 def test_compare_answer_handles_empty_values():
     answer = ChatService._compare_answer({"values": [], "absolute_change": None}, "fr")
 

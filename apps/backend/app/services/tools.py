@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 import unicodedata
+import re
 from typing import Any
 
 from app.core.config import get_settings
@@ -293,9 +294,9 @@ class ToolService:
 
         values = []
         for row in rows:
-            year = row.get(year_field)
-            value = row.get(value_field)
-            if isinstance(year, int) and payload.start_year <= year <= payload.end_year and isinstance(value, int | float):
+            year = self._coerce_year(row.get(year_field))
+            value = self._coerce_number(row.get(value_field))
+            if year is not None and payload.start_year <= year <= payload.end_year and value is not None:
                 values.append({"year": year, "value": value})
         values = sorted(values, key=lambda item: item["year"])
         first = values[0]["value"] if values else None
@@ -482,9 +483,6 @@ class ToolService:
             normalized = cls._normalize_key(key)
             if ("annee" in normalized or "year" in normalized) and cls._has_year_values(rows, key):
                 return key
-        for key in keys:
-            if cls._has_year_values(rows, key):
-                return key
         return "annee"
 
     @classmethod
@@ -495,7 +493,7 @@ class ToolService:
             if key in ignored:
                 continue
             values = [row.get(key) for row in rows]
-            numeric_values = [value for value in values if isinstance(value, int | float)]
+            numeric_values = [number for value in values if (number := cls._coerce_number(value)) is not None]
             if not numeric_values:
                 continue
             non_zero_count = sum(1 for value in numeric_values if value != 0)
@@ -507,12 +505,38 @@ class ToolService:
 
     @staticmethod
     def _has_year_values(rows: list[dict[str, Any]], key: str) -> bool:
-        return any(isinstance(row.get(key), int) and 1900 <= row[key] <= 2100 for row in rows)
+        return any(ToolService._coerce_year(row.get(key)) is not None for row in rows)
 
     @staticmethod
     def _normalize_key(key: str) -> str:
         normalized = unicodedata.normalize("NFKD", key.lower()).encode("ascii", "ignore").decode("ascii")
         return normalized.replace(" ", "_").replace("-", "_")
+
+    @staticmethod
+    def _coerce_year(value: Any) -> int | None:
+        if isinstance(value, bool):
+            return None
+        if isinstance(value, int) and 1900 <= value <= 2100:
+            return value
+        if isinstance(value, str):
+            match = re.search(r"\b(19\d{2}|20\d{2})\b", value)
+            if match:
+                return int(match.group(1))
+        return None
+
+    @staticmethod
+    def _coerce_number(value: Any) -> float | int | None:
+        if isinstance(value, bool):
+            return None
+        if isinstance(value, int | float):
+            return value
+        if isinstance(value, str):
+            normalized = value.strip().replace(" ", "").replace("\u202f", "").replace(",", ".")
+            try:
+                return float(normalized)
+            except ValueError:
+                return None
+        return None
 
 
 def get_tool_service() -> ToolService:
